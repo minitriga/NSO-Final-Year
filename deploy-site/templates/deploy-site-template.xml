@@ -1,0 +1,203 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0"
+                 servicepoint="deploy-site">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+    <device foreach="{/pe}" when="{/pe}">
+      <name>{device}</name>
+      <config>
+        <ipv6 xmlns="urn:ios">
+            <unicast-routing/>
+        </ipv6>
+        <vrf xmlns="urn:ios">
+            <definition>
+            <name>{id}</name>
+            <rd>{loopback}:{/cust-id}</rd>
+            <address-family>
+                <ipv4>
+                <route-target>
+                    <export>
+                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                    </export>
+                    <import>
+                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                    </import>
+                </route-target>
+                </ipv4>
+                <ipv6>
+                <route-target>
+                    <export>
+                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                    </export>
+                    <import>
+                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                    </import>
+                </route-target>
+                </ipv6>
+            </address-family>
+            </definition>
+        </vrf>
+        <interface xmlns="urn:ios">
+            <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                <name>{interface-number}.{/vlan}</name>
+                <shutdown tags="delete"/>
+                <encapsulation>
+                    <dot1Q>
+                    <vlan-id>{/vlan}</vlan-id>
+                    </dot1Q>
+                </encapsulation>
+                <bfd>
+                    <interval>
+                    <msecs>300</msecs>
+                    <min_rx>300</min_rx>
+                    <multiplier>3</multiplier>
+                    </interval>
+                </bfd>
+                <vrf>
+                    <forwarding>{id}</forwarding>
+                </vrf>
+                <ip>
+                    <address>
+                    <primary>
+                        <address>{ipv4-address}</address>
+                        <mask>{ipv4-mask}</mask>
+                    </primary>
+                    </address>
+                </ip>
+                <ipv6>
+                    <address>
+                    <prefix-list>
+                        <prefix>2001:db8:1:310::1/64</prefix>
+                    </prefix-list>
+                    </address>
+                    <enable/>
+                </ipv6>
+            </GigabitEthernet>
+            <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                <name>{interface-number}</name>
+                <description>OUTBOUND TO CPE INTERFACE</description>
+                <shutdown tags="delete"/>
+            </GigabitEthernet>
+        </interface>
+
+        <router xmlns="urn:ios">
+            <bgp>
+            <as-no>{as-number}</as-no>
+            <address-family>
+                <with-vrf>
+                <ipv4>
+                    <af>unicast</af>
+                    <vrf>
+                    <name>{id}</name>
+                    <redistribute>
+                        <connected/>
+                    </redistribute>
+                    <neighbor>
+                        <id>{ngbr-address}</id>
+                        <remote-as>{remote-as-number}</remote-as>
+                        <activate/>
+                        <fall-over-bfd>
+                        <fall-over>
+                            <bfd/>
+                        </fall-over>
+                        </fall-over-bfd>
+                        <as-override/>
+                        <soo>{remote-as-number}:3</soo>
+                    </neighbor>
+                    <maximum-paths>
+                        <eibgp>
+                        <paths>
+                            <number-of-paths>16</number-of-paths>
+                        </paths>
+                        </eibgp>
+                    </maximum-paths>
+                    </vrf>
+                </ipv4>
+                </with-vrf>
+            </address-family>
+            </bgp>
+        </router>
+      </config>
+    </device>
+
+    <device foreach="{/cpe}" when="{/cpe}">
+      <name>{device}</name>
+        <config>
+            <ipv6 xmlns="urn:ios">
+                <unicast-routing/>
+            </ipv6>
+            <policy-map xmlns="urn:ios">
+                <name>SHAPER</name>
+                <class-default>
+                <class>
+                    <name>class-default</name>
+                    <shape>
+                    <average>
+                        <bit-rate>50000</bit-rate>
+                    </average>
+                    </shape>
+                </class>
+                </class-default>
+            </policy-map>
+            <interface xmlns="urn:ios">
+                <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                    <name>{interface-number}.{/vlan}</name>
+                    <shutdown tags="delete"/>
+                    <encapsulation>
+                        <dot1Q>
+                        <vlan-id>{/vlan}</vlan-id>
+                        </dot1Q>
+                    </encapsulation>
+                    <bfd>
+                        <interval>
+                        <msecs>300</msecs>
+                        <min_rx>300</min_rx>
+                        <multiplier>3</multiplier>
+                        </interval>
+                    </bfd>
+                    <ip>
+                        <address>
+                        <primary>
+                            <address>{ipv4-address}</address>
+                            <mask>{ipv4-mask}</mask>
+                        </primary>
+                        </address>
+                    </ip>
+                    <service-policy>
+                        <output>SHAPER</output>
+                    </service-policy>
+                </GigabitEthernet>
+                <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                    <name>{interface-number}</name>
+                    <description>OUTBOUND TO PE INTERFACE</description>
+                    <shutdown tags="delete"/>
+                </GigabitEthernet>
+            </interface>
+            <router xmlns="urn:ios">
+                <bgp>
+                <as-no>{as-number}</as-no>
+                <bgp>
+                    <log-neighbor-changes>true</log-neighbor-changes>
+                </bgp>
+                <neighbor>
+                    <id>{ngbr-address}</id>
+                    <remote-as>{remote-as-number}</remote-as>
+                    <fall-over-bfd>
+                    <fall-over>
+                        <bfd/>
+                    </fall-over>
+                    </fall-over-bfd>
+                </neighbor>
+                <address-family>
+                    <ipv4>
+                    <af>unicast</af>
+                    <neighbor>
+                        <id>{ngbr-address}</id>
+                        <activate/>
+                    </neighbor>
+                    </ipv4>
+                </address-family>
+                </bgp>
+            </router>
+        </config>
+    </device>
+  </devices>
+</config-template>

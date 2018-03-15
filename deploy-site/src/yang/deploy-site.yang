@@ -1,0 +1,191 @@
+module deploy-site {
+  namespace "http://com/example/deploysite";
+  prefix deploy-site;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  import tailf-ncs {
+    prefix ncs;
+  }
+
+augment /ncs:services { 
+
+list deploy-site {
+    description "Deploy Site";
+    tailf:info "Deploy Site";
+    key name;
+
+    uses ncs:service-data;
+    ncs:servicepoint "deploy-site";
+
+    leaf name {
+      tailf:info "Unique service id";
+      tailf:cli-allow-range;
+      type string;
+    }
+
+    leaf cust-id {
+        mandatory true;
+        tailf:info "Customer ID";
+        type uint16 {
+            range "1..4096";
+        }
+    }
+
+    leaf vlan {
+            mandatory true;
+            type uint16 {
+                range "1..4096";
+            }
+    }
+
+    list pe {
+        key "id";
+
+        leaf id {
+          tailf:info "PE identifier";
+          mandatory true;
+          type string;
+        }
+
+        leaf device {
+          mandatory true;
+          type leafref {
+            path "/ncs:devices/ncs:device/ncs:name";
+          }
+        }
+
+        // replace with your own stuff here
+        leaf loopback {
+            tailf:info "IPv4 loopback address";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 loopback address";
+        }
+
+        leaf interface-type {
+            tailf:info "Interface Type";
+            description "Outbound Interface";
+            mandatory true;
+            type enumeration {
+            enum "GigabitEthernet";
+            }
+        }
+
+        leaf interface-number {
+            tailf:info "Interface Number (e.g 1 | 0/1)";
+            mandatory true;
+            type string;
+        }
+
+        // replace with your own stuff here
+        leaf ipv4-address {
+            tailf:info "IPv4 Address of outbound interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Address of outbound interface";
+        }
+
+        // replace with your own stuff here
+        leaf ipv4-mask {
+            tailf:info "IPv4 Mask of outbound interface";
+            mandatory true;
+            type string;
+            description "IPv4 Mask of outbound interface";
+        }
+
+        leaf ngbr-address {
+            tailf:info "IPv4 Neighbor Address";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Neighbor Address";
+        }
+
+        leaf as-number {
+           tailf:info "CPE Router as-number";
+           mandatory true;
+           type string;
+        }
+        
+        leaf remote-as-number {
+           tailf:info "CPE Router as-number";
+           mandatory true;
+           type string;
+        }
+    }
+
+    list cpe {
+        key "id";
+
+        leaf id {
+          tailf:info "PE identifier";
+          mandatory true;
+          type string;
+        }
+
+        leaf device {
+          mandatory true;
+          type leafref {
+            path "/ncs:devices/ncs:device/ncs:name";
+          }
+        }
+        
+        leaf interface-type {
+            tailf:info "Interface Type";
+            description "Outbound Interface";
+            mandatory true;
+            type enumeration {
+            enum "GigabitEthernet";
+            }
+        }
+
+        leaf interface-number {
+            tailf:info "Interface Number (e.g 1 | 0/1)";
+            mandatory true;
+            type string;
+        }
+
+        // replace with your own stuff here
+        leaf ipv4-address {
+            tailf:info "IPv4 Address of outbound interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Address of outbound interface";
+        }
+
+        // replace with your own stuff here
+        leaf ipv4-mask {
+            tailf:info "IPv4 Mask of outbound interface";
+            mandatory true;
+            type string;
+            description "IPv4 Mask of outbound interface";
+        }
+
+        leaf ngbr-address {
+            tailf:info "IPv4 Neighbor Address";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Neighbor Address";
+        }
+
+        leaf as-number {
+           tailf:info "CPE Router as-number";
+           mandatory true;
+           type string;
+        }
+        
+        leaf remote-as-number {
+           tailf:info "CPE Router as-number";
+           mandatory true;
+           type string;
+        }
+    } 
+  }
+  }
+}
