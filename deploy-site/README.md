@@ -35,3 +35,5 @@ GigabitEthernet
 commit dry-run outformat native 
 
 ```
+
+Varify this has been applied using `show running-config services deploy-site`
