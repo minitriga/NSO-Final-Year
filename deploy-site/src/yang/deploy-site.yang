@@ -45,6 +45,24 @@ list deploy-site {
             }
     }
 
+    leaf bfd {
+            tailf:info "Enable BFD";
+            mandatory true;
+            type boolean;
+    }
+
+    leaf ipv6 {
+            tailf:info "Enable IPv6";
+            mandatory true;
+            type boolean;
+    }
+
+    leaf soo {
+            tailf:info "Enable BGP Signle Site of Origin";
+            mandatory true;
+            type boolean;
+    }
+
     list pe {
         key "id";
 
@@ -96,8 +114,15 @@ list deploy-site {
         leaf ipv4-mask {
             tailf:info "IPv4 Mask of outbound interface";
             mandatory true;
-            type string;
+            type inet:ipv4-address;
             description "IPv4 Mask of outbound interface";
+        }
+
+        leaf ipv6-address {
+            tailf:info "IPv6 Address of outbound interface";
+            mandatory true;
+            type string;
+            description "IPv6 Address of outbound interface";
         }
 
         leaf ngbr-address {
@@ -105,6 +130,13 @@ list deploy-site {
             mandatory true;
             type inet:ipv4-address;
             description "IPv4 Neighbor Address";
+        }
+
+        leaf ngbr6-address {
+            tailf:info "IPv6 Neighbor Address";
+            mandatory true;
+            type inet:ipv6-address;
+            description "IPv6 Neighbor Address";
         }
 
         leaf as-number {
@@ -163,8 +195,15 @@ list deploy-site {
         leaf ipv4-mask {
             tailf:info "IPv4 Mask of outbound interface";
             mandatory true;
-            type string;
+            type inet:ipv4-address;
             description "IPv4 Mask of outbound interface";
+        }
+
+        leaf ipv6-address {
+            tailf:info "IPv6 Address of outbound interface";
+            mandatory true;
+            type string;
+            description "IPv6 Address of outbound interface";
         }
 
         leaf ngbr-address {
@@ -172,6 +211,13 @@ list deploy-site {
             mandatory true;
             type inet:ipv4-address;
             description "IPv4 Neighbor Address";
+        }
+
+        leaf ngbr6-address {
+            tailf:info "IPv6 Neighbor Address";
+            mandatory true;
+            type inet:ipv6-address;
+            description "IPv6 Neighbor Address";
         }
 
         leaf as-number {
