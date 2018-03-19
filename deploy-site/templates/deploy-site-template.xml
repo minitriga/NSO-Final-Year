@@ -221,6 +221,9 @@
                 <address-family>
                     <ipv4>
                     <af>unicast</af>
+		    <redistribute>
+                    	<connected/>
+                    </redistribute>
                     <neighbor>
                         <id>{ngbr-address}</id>
                         <activate/>
