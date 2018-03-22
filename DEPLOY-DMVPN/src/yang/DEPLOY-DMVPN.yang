@@ -1,0 +1,179 @@
+module DEPLOY-DMVPN {
+  namespace "http://com/example/DEPLOYDMVPN";
+  prefix DEPLOY-DMVPN;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  augment /ncs:services { 
+
+  list DEPLOY-DMVPN {
+    key name;
+
+    uses ncs:service-data;
+    ncs:servicepoint "DEPLOY-DMVPN";
+
+    leaf name {
+      type string;
+    }
+
+    leaf ipsec-secret {
+        tailf:info "Password for IPSEC";
+        mandatory true;
+        type string;
+    }
+
+    list HUB {
+        key "device";
+
+        leaf device {
+          mandatory true;
+          type leafref {
+            path "/ncs:devices/ncs:device/ncs:name";
+          }
+        }
+
+        leaf hub-tunnel-address {
+            tailf:info "IPv4 Address of hub tunnel interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Address of hub tunnel interface";
+        }
+
+        leaf hub-tunnel-mask {
+            tailf:info "IPv4 Mask of hub tunnel interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Mask of hub tunnel interface";
+        }
+
+        leaf interface-type {
+            tailf:info "Interface Type";
+            description "Outbound Interface";
+            mandatory true;
+            type enumeration {
+            enum "GigabitEthernet";
+            }
+        }
+
+        leaf interface-number {
+            tailf:info "Interface Number (e.g 1 | 0/1)";
+            mandatory true;
+            type string;
+        }
+
+        leaf sub-interface-number {
+            mandatory true;
+            type uint16 {
+                range "1..4096";
+            }
+        }
+
+        list eigrp {
+            key "network";
+
+            leaf network {
+                tailf:info "EIGRP Network Address";
+                mandatory true;
+                type inet:ipv4-address;
+                description "EIGRP Network Address";
+            }
+
+            leaf network-mask {
+                tailf:info "EIGRP Network Address";
+                mandatory true;
+                type inet:ipv4-address;
+                description "EIGRP Network Address";
+            }
+        }
+    }
+
+    list SPOKE {
+        key "device";
+
+        leaf device {
+          mandatory true;
+          type leafref {
+            path "/ncs:devices/ncs:device/ncs:name";
+          }
+        }
+
+        leaf spoke-tunnel-address {
+            tailf:info "IPv4 Address of spoke tunnel interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Address of spoke tunnel interface";
+        }
+
+        leaf spoke-tunnel-mask {
+            tailf:info "IPv4 Mask of spoke tunnel interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Mask of spoke tunnel interface";
+        }
+
+        leaf hub-tunnel-address {
+            tailf:info "IPv4 Address of hub tunnel interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Address of hub tunnel interface";
+        }
+
+        leaf hub-public-address {
+            tailf:info "IPv4 Address of hub tunnel interface";
+            mandatory true;
+            type inet:ipv4-address;
+            description "IPv4 Address of hub tunnel interface";
+        }
+
+        leaf interface-type {
+            tailf:info "Interface Type";
+            description "Outbound Interface";
+            mandatory true;
+            type enumeration {
+            enum "GigabitEthernet";
+            }
+        }
+
+        leaf interface-number {
+            tailf:info "Interface Number (e.g 1 | 0/1)";
+            mandatory true;
+            type string;
+        }
+
+        leaf sub-interface-number {
+            mandatory true;
+            type uint16 {
+                range "1..4096";
+            }
+        }
+
+        list eigrp {
+            key "network";
+
+            leaf network {
+                tailf:info "EIGRP Network Address";
+                mandatory true;
+                type inet:ipv4-address;
+                description "EIGRP Network Address";
+            }
+
+            leaf network-mask {
+                tailf:info "EIGRP Network Address";
+                mandatory true;
+                type inet:ipv4-address;
+                description "EIGRP Network Address";
+            }
+        }
+    }
+  }
+  }
+}
