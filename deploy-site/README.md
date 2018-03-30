@@ -95,7 +95,7 @@ CSR1K-1-PE-1:
 ### Add New Site
 
 ```
-services deploy-site Volvo
+services deploy-site Kamazoy
 pe CE-1-A-2
 CSR1K-1-PE-2
 192.0.2.12
