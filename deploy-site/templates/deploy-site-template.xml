@@ -1,255 +1,331 @@
-<config-template xmlns="http://tail-f.com/ns/config/1.0"
-                 servicepoint="deploy-site">
-  <devices xmlns="http://tail-f.com/ns/ncs">
-    <device foreach="{/pe}" when="{/pe}">
-      <name>{device}</name>
-      <config>
-        <ipv6 xmlns="urn:ios" when="{/ipv6='true'}">
-            <unicast-routing/>
-        </ipv6>
-        <vrf xmlns="urn:ios">
-            <definition>
-            <name>{id}</name>
-            <rd>{loopback}:{/cust-id}</rd>
-            <address-family>
-                <ipv4>
-                <route-target>
-                    <export>
-                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
-                    </export>
-                    <import>
-                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
-                    </import>
-                </route-target>
-                </ipv4>
-                <ipv6 when="{/ipv6='true'}">
-                <route-target>
-                    <export>
-                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
-                    </export>
-                    <import>
-                    <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
-                    </import>
-                </route-target>
+<config-template 
+    xmlns="http://tail-f.com/ns/config/1.0" servicepoint="deploy-site">
+    <devices 
+        xmlns="http://tail-f.com/ns/ncs">
+        <device foreach="{/pe}" when="{/pe}">
+            <name>{device}</name>
+            <config>
+                <!-- Cisco IOS Config -->
+                <ipv6 
+                    xmlns="urn:ios" when="{/ipv6='true'}">
+                    <unicast-routing/>
                 </ipv6>
-            </address-family>
-            </definition>
-        </vrf>
-        <interface xmlns="urn:ios">
-            <GigabitEthernet when="{interface-type='GigabitEthernet'}">
-                <name>{interface-number}.{/vlan}</name>
-                <shutdown tags="delete"/>
-                <encapsulation>
-                    <dot1Q>
-                    <vlan-id>{/vlan}</vlan-id>
-                    </dot1Q>
-                </encapsulation>
-                <bfd when="{/bfd='true'}">
-                    <interval>
-                    <msecs>300</msecs>
-                    <min_rx>300</min_rx>
-                    <multiplier>3</multiplier>
-                    </interval>
-                </bfd>
-                <vrf>
-                    <forwarding>{id}</forwarding>
-                </vrf>
-                <ip>
-                    <address>
-                    <primary>
-                        <address>{ipv4-address}</address>
-                        <mask>{ipv4-mask}</mask>
-                    </primary>
-                    </address>
-                </ip>
-                <ipv6 when="{/ipv6='true'}">
-                    <address>
-                    <prefix-list>
-                        <prefix>{ipv6-address}</prefix>
-                    </prefix-list>
-                    </address>
-                    <enable/>
-                </ipv6>
-            </GigabitEthernet>
-            <GigabitEthernet when="{interface-type='GigabitEthernet'}">
-                <name>{interface-number}</name>
-                <description>OUTBOUND TO CPE INTERFACE</description>
-                <shutdown tags="delete"/>
-            </GigabitEthernet>
-        </interface>
-
-        <router xmlns="urn:ios">
-            <bgp>
-            <as-no>{as-number}</as-no>
-            <address-family>
-                <with-vrf>
-                <ipv4>
-                    <af>unicast</af>
-                    <vrf>
-                    <name>{id}</name>
-                    <redistribute>
-                        <connected/>
-                    </redistribute>
-                    <neighbor>
-                        <id>{ngbr-address}</id>
-                        <remote-as>{remote-as-number}</remote-as>
-                        <activate/>
-                        <fall-over-bfd when="{/bfd='true'}">
-                            <fall-over>
-                                <bfd/>
-                            </fall-over>
-                        </fall-over-bfd>
-                        <as-override/>
-                        <soo when="{/soo='true'}">{remote-as-number}:3</soo>
-                    </neighbor>
-                    <maximum-paths>
-                        <eibgp>
-                        <paths>
-                            <number-of-paths>16</number-of-paths>
-                        </paths>
-                        </eibgp>
-                    </maximum-paths>
-                    </vrf>
-                </ipv4>
-                </with-vrf>
-                <ipv6-with-vrf when="{/ipv6='true'}">
-                    <ipv6>
-                        <af>unicast</af>
-                        <vrf>
+                <vrf 
+                    xmlns="urn:ios">
+                    <definition>
                         <name>{id}</name>
+                        <rd>{loopback}:{/cust-id}</rd>
+                        <address-family>
+                            <ipv4>
+                                <route-target>
+                                    <export>
+                                        <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                                    </export>
+                                    <import>
+                                        <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                                    </import>
+                                </route-target>
+                            </ipv4>
+                            <ipv6 when="{/ipv6='true'}">
+                                <route-target>
+                                    <export>
+                                        <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                                    </export>
+                                    <import>
+                                        <asn-ip>{/cust-id}:{/cust-id}</asn-ip>
+                                    </import>
+                                </route-target>
+                            </ipv6>
+                        </address-family>
+                    </definition>
+                </vrf>
+                <interface 
+                    xmlns="urn:ios">
+                    <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                        <name>{interface-number}.{/vlan}</name>
+                        <shutdown tags="delete"/>
+                        <encapsulation>
+                            <dot1Q>
+                                <vlan-id>{/vlan}</vlan-id>
+                            </dot1Q>
+                        </encapsulation>
+                        <bfd when="{/bfd='true'}">
+                            <interval>
+                                <msecs>300</msecs>
+                                <min_rx>300</min_rx>
+                                <multiplier>3</multiplier>
+                            </interval>
+                        </bfd>
+                        <vrf>
+                            <forwarding>{id}</forwarding>
+                        </vrf>
+                        <ip>
+                            <address>
+                                <primary>
+                                    <address>{ipv4-address}</address>
+                                    <mask>{ipv4-mask}</mask>
+                                </primary>
+                            </address>
+                        </ip>
+                        <ipv6 when="{/ipv6='true'}">
+                            <address>
+                                <prefix-list>
+                                    <prefix>{ipv6-address}</prefix>
+                                </prefix-list>
+                            </address>
+                            <enable/>
+                        </ipv6>
+                    </GigabitEthernet>
+                    <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                        <name>{interface-number}</name>
+                        <description>OUTBOUND TO CPE INTERFACE</description>
+                        <shutdown tags="delete"/>
+                    </GigabitEthernet>
+                </interface>
+                <router 
+                    xmlns="urn:ios">
+                    <bgp>
+                        <as-no>{as-number}</as-no>
+                        <address-family>
+                            <with-vrf>
+                                <ipv4>
+                                    <af>unicast</af>
+                                    <vrf>
+                                        <name>{id}</name>
+                                        <redistribute>
+                                            <connected/>
+                                        </redistribute>
+                                        <neighbor>
+                                            <id>{ngbr-address}</id>
+                                            <remote-as>{remote-as-number}</remote-as>
+                                            <activate/>
+                                            <fall-over-bfd when="{/bfd='true'}">
+                                                <fall-over>
+                                                    <bfd/>
+                                                </fall-over>
+                                            </fall-over-bfd>
+                                            <as-override/>
+                                            <soo when="{/soo='true'}">{remote-as-number}:3</soo>
+                                        </neighbor>
+                                        <maximum-paths>
+                                            <eibgp>
+                                                <paths>
+                                                    <number-of-paths>16</number-of-paths>
+                                                </paths>
+                                            </eibgp>
+                                        </maximum-paths>
+                                    </vrf>
+                                </ipv4>
+                            </with-vrf>
+                            <ipv6-with-vrf when="{/ipv6='true'}">
+                                <ipv6>
+                                    <af>unicast</af>
+                                    <vrf>
+                                        <name>{id}</name>
+                                        <neighbor>
+                                            <id>{ngbr6-address}</id>
+                                            <remote-as>{remote-as-number}</remote-as>
+                                            <activate/>
+                                            <fall-over-bfd when="{/bfd='true'}">
+                                                <fall-over>
+                                                    <bfd/>
+                                                </fall-over>
+                                            </fall-over-bfd>
+                                            <as-override/>
+                                            <soo when="{/soo='true'}">{remote-as-number}:3</soo>
+                                        </neighbor>
+                                    </vrf>
+                                </ipv6>
+                            </ipv6-with-vrf>
+                        </address-family>
+                    </bgp>
+                </router>
+            </config>
+        </device>
+        <device foreach="{/cpe}" when="{/cpe}">
+            <name>{device}</name>
+            <config>
+                <ipv6 
+                    xmlns="urn:ios" when="{/ipv6='true'}">
+                    <unicast-routing/>
+                </ipv6>
+                <policy-map 
+                    xmlns="urn:ios">
+                    <name>SHAPER</name>
+                    <class-default>
+                        <class>
+                            <name>class-default</name>
+                            <shape>
+                                <average>
+                                    <bit-rate>50000</bit-rate>
+                                </average>
+                            </shape>
+                        </class>
+                    </class-default>
+                </policy-map>
+                <interface 
+                    xmlns="urn:ios">
+                    <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                        <name>{interface-number}.{/vlan}</name>
+                        <shutdown tags="delete"/>
+                        <encapsulation>
+                            <dot1Q>
+                                <vlan-id>{/vlan}</vlan-id>
+                            </dot1Q>
+                        </encapsulation>
+                        <bfd when="{/bfd='true'}">
+                            <interval>
+                                <msecs>300</msecs>
+                                <min_rx>300</min_rx>
+                                <multiplier>3</multiplier>
+                            </interval>
+                        </bfd>
+                        <ip>
+                            <address>
+                                <primary>
+                                    <address>{ipv4-address}</address>
+                                    <mask>{ipv4-mask}</mask>
+                                </primary>
+                            </address>
+                        </ip>
+                        <ipv6 when="{/ipv6='true'}">
+                            <address>
+                                <prefix-list>
+                                    <prefix>{ipv6-address}</prefix>
+                                </prefix-list>
+                            </address>
+                            <enable/>
+                        </ipv6>
+                        <service-policy>
+                            <output>SHAPER</output>
+                        </service-policy>
+                    </GigabitEthernet>
+                    <GigabitEthernet when="{interface-type='GigabitEthernet'}">
+                        <name>{interface-number}</name>
+                        <description>OUTBOUND TO PE INTERFACE</description>
+                        <shutdown tags="delete"/>
+                    </GigabitEthernet>
+                </interface>
+                <router 
+                    xmlns="urn:ios">
+                    <bgp>
+                        <as-no>{as-number}</as-no>
+                        <bgp>
+                            <log-neighbor-changes>true</log-neighbor-changes>
+                        </bgp>
                         <neighbor>
+                            <id>{ngbr-address}</id>
+                            <remote-as>{remote-as-number}</remote-as>
+                            <fall-over-bfd when="{/bfd='true'}">
+                                <fall-over>
+                                    <bfd/>
+                                </fall-over>
+                            </fall-over-bfd>
+                        </neighbor>
+                        <neighbor when="{/ipv6='true'}">
                             <id>{ngbr6-address}</id>
                             <remote-as>{remote-as-number}</remote-as>
-                            <activate/>
-                            <fall-over-bfd when="{/bfd='true'}">
-                                <fall-over>
-                                    <bfd/>
-                                </fall-over>
-                            </fall-over-bfd>
-                            <as-override/>
-                            <soo when="{/soo='true'}">{remote-as-number}:3</soo>
                         </neighbor>
-                        </vrf>
-                    </ipv6>
-                </ipv6-with-vrf>
-            </address-family>
-            </bgp>
-        </router>
-      </config>
-    </device>
-
-    <device foreach="{/cpe}" when="{/cpe}">
-      <name>{device}</name>
-        <config>
-            <ipv6 xmlns="urn:ios" when="{/ipv6='true'}">
-                <unicast-routing/>
-            </ipv6>
-            <policy-map xmlns="urn:ios">
-                <name>SHAPER</name>
-                <class-default>
-                <class>
-                    <name>class-default</name>
-                    <shape>
-                    <average>
-                        <bit-rate>50000</bit-rate>
-                    </average>
-                    </shape>
-                </class>
-                </class-default>
-            </policy-map>
-            <interface xmlns="urn:ios">
-                <GigabitEthernet when="{interface-type='GigabitEthernet'}">
-                    <name>{interface-number}.{/vlan}</name>
-                    <shutdown tags="delete"/>
-                    <encapsulation>
-                        <dot1Q>
-                        <vlan-id>{/vlan}</vlan-id>
-                        </dot1Q>
-                    </encapsulation>
-                    <bfd when="{/bfd='true'}">
-                        <interval>
-                        <msecs>300</msecs>
-                        <min_rx>300</min_rx>
-                        <multiplier>3</multiplier>
-                        </interval>
-                    </bfd>
-                    <ip>
-                        <address>
-                        <primary>
-                            <address>{ipv4-address}</address>
-                            <mask>{ipv4-mask}</mask>
-                        </primary>
-                        </address>
-                    </ip>
-                    <ipv6 when="{/ipv6='true'}">
-                         <address>
-                           <prefix-list>
-                             <prefix>{ipv6-address}</prefix>
-                           </prefix-list>
-                         </address>
-                         <enable/>
-                       </ipv6>
-                    <service-policy>
-                        <output>SHAPER</output>
-                    </service-policy>
-                </GigabitEthernet>
-                <GigabitEthernet when="{interface-type='GigabitEthernet'}">
-                    <name>{interface-number}</name>
-                    <description>OUTBOUND TO PE INTERFACE</description>
-                    <shutdown tags="delete"/>
-                </GigabitEthernet>
-            </interface>
-            <router xmlns="urn:ios">
-                <bgp>
-                <as-no>{as-number}</as-no>
-                <bgp>
-                    <log-neighbor-changes>true</log-neighbor-changes>
-                </bgp>
-                <neighbor>
-                    <id>{ngbr-address}</id>
-                    <remote-as>{remote-as-number}</remote-as>
-                    <fall-over-bfd when="{/bfd='true'}">
-                    <fall-over>
-                        <bfd/>
-                    </fall-over>
-                    </fall-over-bfd>
-                </neighbor>
-                <neighbor when="{/ipv6='true'}">
-                    <id>{ngbr6-address}</id>
-                    <remote-as>{remote-as-number}</remote-as>
-                </neighbor>
-                <address-family>
-                    <ipv4>
-                    <af>unicast</af>
-		    <redistribute>
-                    	<connected/>
-                    </redistribute>
-                    <neighbor>
-                        <id>{ngbr-address}</id>
-                        <activate/>
-                        <fall-over-bfd when="{/bfd='true'}">
-                            <fall-over>
-                                <bfd/>
-                            </fall-over>
-                        </fall-over-bfd>
-                    </neighbor>
-                    </ipv4>
-                    <ipv6 when="{/ipv6='true'}">
-                        <af>unicast</af>
-                        <neighbor>
-                            <id>{ngbr6-address}</id>
-                            <activate/>
-                            <fall-over-bfd when="{/bfd='true'}">
-                                <fall-over>
-                                    <bfd/>
-                                </fall-over>
-                            </fall-over-bfd>
-                        </neighbor>
-                    </ipv6>
-                </address-family>
-                </bgp>
-            </router>
-        </config>
-    </device>
-  </devices>
+                        <address-family>
+                            <ipv4>
+                                <af>unicast</af>
+                                <redistribute>
+                                    <connected/>
+                                </redistribute>
+                                <neighbor>
+                                    <id>{ngbr-address}</id>
+                                    <activate/>
+                                    <fall-over-bfd when="{/bfd='true'}">
+                                        <fall-over>
+                                            <bfd/>
+                                        </fall-over>
+                                    </fall-over-bfd>
+                                </neighbor>
+                            </ipv4>
+                            <ipv6 when="{/ipv6='true'}">
+                                <af>unicast</af>
+                                <neighbor>
+                                    <id>{ngbr6-address}</id>
+                                    <activate/>
+                                    <fall-over-bfd when="{/bfd='true'}">
+                                        <fall-over>
+                                            <bfd/>
+                                        </fall-over>
+                                    </fall-over-bfd>
+                                </neighbor>
+                            </ipv6>
+                        </address-family>
+                    </bgp>
+                </router>
+                <!-- Junos Config -->
+                <configuration 
+                    xmlns="http://xml.juniper.net/xnm/1.1/xnm">
+                    <interfaces>
+                        <interface>
+                            <name>{interface-type}-{interface-number}</name>
+                            <vlan-tagging/>
+                            <unit>
+                                <name>1</name>
+                                <vlan-id>{/vlan}</vlan-id>
+                                <family>
+                                    <inet>
+                                        <address>
+                                            <name>{ipv4-address}/{ipv4-prefix}</name>
+                                        </address>
+                                    </inet>
+                                    <inet6 when="{/ipv6='true'}">
+                                        <address>
+                                            <name>{ipv6-address}</name>
+                                        </address>
+                                    </inet6>
+                                </family>
+                            </unit>
+                        </interface>
+                    </interfaces>
+                    <routing-options>
+                        <autonomous-system>
+                            <as-number>{as-number}</as-number>
+                        </autonomous-system>
+                    </routing-options>
+                    <protocols>
+                        <bgp>
+                            <group>
+                                <name>external-peers</name>
+                                <type>external</type>
+                                <family>
+                                    <inet>
+                                        <any/>
+                                    </inet>
+                                </family>
+                                <export>redistribute-connected</export>
+                                <bfd-liveness-detection when="{/bfd='true'}">
+                                    <minimum-interval>300</minimum-interval>
+                                    <minimum-receive-interval>300</minimum-receive-interval>
+                                    <multiplier>3</multiplier>
+                                </bfd-liveness-detection>
+                                <neighbor>
+                                    <name>{ngbr-address}</name>
+                                    <peer-as>{remote-as-number}</peer-as>
+                                </neighbor>
+                            </group>
+                        </bgp>
+                    </protocols>
+                    <policy-options>
+                        <policy-statement>
+                            <name>redistribute-connected</name>
+                            <term>
+                                <name>1</name>
+                                <from>
+                                    <protocol>direct</protocol>
+                                </from>
+                                <then>
+                                    <accept/>
+                                </then>
+                            </term>
+                        </policy-statement>
+                    </policy-options>
+                </configuration>
+            </config>
+        </device>
+    </devices>
 </config-template>

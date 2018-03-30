@@ -79,7 +79,6 @@ list deploy-site {
           }
         }
 
-        // replace with your own stuff here
         leaf loopback {
             tailf:info "IPv4 loopback address";
             mandatory true;
@@ -102,7 +101,6 @@ list deploy-site {
             type string;
         }
 
-        // replace with your own stuff here
         leaf ipv4-address {
             tailf:info "IPv4 Address of outbound interface";
             mandatory true;
@@ -110,7 +108,6 @@ list deploy-site {
             description "IPv4 Address of outbound interface";
         }
 
-        // replace with your own stuff here
         leaf ipv4-mask {
             tailf:info "IPv4 Mask of outbound interface";
             mandatory true;
@@ -174,6 +171,7 @@ list deploy-site {
             mandatory true;
             type enumeration {
             enum "GigabitEthernet";
+            enum "ge";
             }
         }
 
@@ -183,7 +181,6 @@ list deploy-site {
             type string;
         }
 
-        // replace with your own stuff here
         leaf ipv4-address {
             tailf:info "IPv4 Address of outbound interface";
             mandatory true;
@@ -191,12 +188,17 @@ list deploy-site {
             description "IPv4 Address of outbound interface";
         }
 
-        // replace with your own stuff here
         leaf ipv4-mask {
             tailf:info "IPv4 Mask of outbound interface";
             mandatory true;
             type inet:ipv4-address;
             description "IPv4 Mask of outbound interface";
+        }
+
+        leaf ipv4-prefix {
+            tailf:info "IPv4 Prefix of outbound interface (e.g /30)";
+            type string;
+            description "IPv4 Mask of outbound interface (e.g /30)";
         }
 
         leaf ipv6-address {
