@@ -7,12 +7,13 @@ This is a package to deploy a L3 MPLS Network using NSO. This was developed as p
 ## Configure Tenant in NSO CLI
 
 ```
-services deploy-site Volvo
+services deploy-site Kamazoy
 1
 2894
 true
 false
 false
+
 pe CE-1-A
 CSR1K-1-PE-1
 192.0.2.11
@@ -80,8 +81,8 @@ To commit the config enter `commit`
 ### Verify Connectivity to Other Site
 
 CE-1-B-1:
-`ping 172.16.1.1 source lo1 repeat 10000`
-`traceroute 172.16.1.1 source lo1`
+`ping 172.16.1.1 source lo0 repeat 10000`
+`traceroute 172.16.1.1 source lo0`
 
 CSR1K-1-P:
 `show mpls forwarding-table`
@@ -108,10 +109,10 @@ GigabitEthernet
 64512
 65413
 
-cpe CE-1-A-2
-CPE-1-A-2
-GigabitEthernet
-1
+cpe CE-1-A-3
+CPE-1-A-3
+ge
+0/0/1
 100.64.3.2
 255.255.255.252
 2001:db8:1:312::2/64
@@ -119,6 +120,7 @@ GigabitEthernet
 2001:db8:1:312::1
 65413
 64512
+ipv4-prefix /30
 ```
 
 ### Verify New Site Connectivity
@@ -127,8 +129,8 @@ NSO:
 
 
 CE-1-B-1:
-`ping 172.16.3.1 source lo1 repeat 10000`
-`traceroute 172.16.3.1 source lo1`
+`ping 172.16.3.1 source lo0 repeat 10000`
+`traceroute 172.16.3.1 source lo0`
 
 ### Rollback Functionality
 
@@ -136,4 +138,4 @@ Do you want to roll back the configuration enter `rollback configuration`
 
 ## Service Deployment Rest API
 
-
+See postman scripts
