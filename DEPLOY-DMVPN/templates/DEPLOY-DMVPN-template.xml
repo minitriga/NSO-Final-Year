@@ -88,6 +88,9 @@
                                 <ipv4>
                                     <af>unicast</af>
                                     <autonomous-system>1</autonomous-system>
+                                    <topology>
+                                        <base/>
+                                    </topology>
                                     <af-interface>
                                         <name>Tunnel0</name>
                                         <next-hop-self>false</next-hop-self>
