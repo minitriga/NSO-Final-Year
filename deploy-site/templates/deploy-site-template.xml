@@ -122,6 +122,9 @@
                                     <af>unicast</af>
                                     <vrf>
                                         <name>{id}</name>
+                                        <redistribute>
+                                            <connected/>
+                                        </redistribute>
                                         <neighbor>
                                             <id>{ngbr6-address}</id>
                                             <remote-as>{remote-as-number}</remote-as>
@@ -134,6 +137,13 @@
                                             <as-override/>
                                             <soo when="{/soo='true'}">{remote-as-number}:3</soo>
                                         </neighbor>
+                                        <maximum-paths>
+                                            <eibgp>
+                                                <paths>
+                                                    <number-of-paths>16</number-of-paths>
+                                                </paths>
+                                            </eibgp>
+                                        </maximum-paths>
                                     </vrf>
                                 </ipv6>
                             </ipv6-with-vrf>
@@ -244,6 +254,9 @@
                             </ipv4>
                             <ipv6 when="{/ipv6='true'}">
                                 <af>unicast</af>
+                                <redistribute>
+                                    <connected/>
+                                </redistribute>
                                 <neighbor>
                                     <id>{ngbr6-address}</id>
                                     <activate/>
